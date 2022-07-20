@@ -8,9 +8,19 @@
 </head>
 <body>
 
-  <div id="twitterDiv">
 
+
+  <div class="pyDiv">
+    <input type="text" name="" id="">
+    <button id="chooseTest">click me</button>
   </div>
+
+  <select name="
+  " id="mySelect"></select>
+
+  <div id="testDiv"></div>
+
+  <div id="successOrFailDiv"></div>
   
 
 
@@ -18,17 +28,57 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
   <script>
 
-
-    axios.get('/tweet')
+  axios.get('/tests')
     .then(res=> {
       console.log(res)
-      document.getElementById('twitterDiv').innerHTML+= `
-      ${res.data.data.text}
-      `
+      res.data.forEach(test=> {
+        document.getElementById('mySelect').innerHTML += `
+         <option value="${test.name}">${test.name}</option>
+        `
+      })
     })
-    .catch(err=> {
-      console.log(err)
+
+    document.getElementById("chooseTest").addEventListener('click', event => {
+      var mySelect = document.getElementById("mySelect");
+      const selectedOption = mySelect.options[mySelect.selectedIndex].value
+      console.log(selectedOption)
+      if(selectedOption === 'test1') {
+        document.getElementById('testDiv').innerHTML = `
+        <p> you've selected test 1! <p>
+        <select type="text" name="" id="test1Select"><select>
+        `
+        axios.get('/tests/test1/manufacturers')
+        .then(res2=> {
+          console.log(res2.data)
+          res2.data.forEach(manufacturer=> {
+              document.getElementById('test1Select').innerHTML += `
+            <option value="${manufacturer.name}">${manufacturer.name}</option>
+            <button id="startTest1"> Start Test </button>
+          `
+          document.getElementById('startTest1').addEventListener('click', event => {
+            axios.post('/tests/1/start')
+            .then(res3=> {
+              if(res3.passed) {
+                document.getElementById('successOrFailDiv').innerHTML = `
+                test1 passed!
+                `
+              }
+            })
+          })
+          })
+        })
+      }
     })
+
+
+
+
+
+
+
+
+
+
 
   </script>
 </body>
